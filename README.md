@@ -6,3 +6,5 @@ Para rodar o projeto, deve-se adicionar a pasta JOGL nas libraries do programa e
 Para jogar, utilize as setas para se mover.
 
 Aproveite!
+
+[Não clonar a pasta .idea e o DeadClubCity.iml]
