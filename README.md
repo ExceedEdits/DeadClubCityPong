@@ -7,4 +7,4 @@ Para jogar, utilize as setas para se mover.
 
 Aproveite!
 
-[Não clonar a pasta .idea e o DeadClubCity.iml]
+[Não clonar a pasta .idea e o DeadClubCityPong.iml]
