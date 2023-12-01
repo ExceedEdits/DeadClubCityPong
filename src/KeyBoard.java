@@ -4,7 +4,7 @@ import com.jogamp.opengl.GL2;
 
 /**
  *
- * @author ExceedEdits
+ * @author ExceedEdits & Izabelle
  */
 public class KeyBoard implements KeyListener{
     private Cena cena;

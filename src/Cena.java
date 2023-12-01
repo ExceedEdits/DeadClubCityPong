@@ -18,7 +18,8 @@ public class Cena implements GLEventListener{
     private float xMin, xMax, yMin, yMax, zMin, zMax;
     double angle = 0;
     int score = 0, hp = 3;
-    float xFactor = 0, bY = 0, bX = 0, xSpeed = 2, ySpeed = 1;
+    float xFactor = 0, bY = 0, bX = 0, xSpeed = 2, ySpeed = 1, bgSpeed = 1, bg1Factor = 90,
+            bg2Factor = 30, bg3Factor = -20, bg4Factor = -80;
     public boolean turn = true, loss = false;
     public boolean menuon = true, menuoff = false;
     public int mode;
@@ -26,12 +27,12 @@ public class Cena implements GLEventListener{
     // Atributos
     public float limite;
 
-    //Referencia para classe Textura
+    // Referencia para classe Textura
     Textura textura = null;
-    //Quantidade de Texturas a ser carregada
+    // Quantidade de Texturas a ser carregada
     private int totalTextura = 1;
 
-    //Constantes para identificar as imagens
+    // Constantes para identificar as imagens
 
     public static final String FACE1 = "assets/Menu.jpg";
 
@@ -50,7 +51,7 @@ public class Cena implements GLEventListener{
         ang = 0;
         limite = 1;
 
-        //Cria uma instancia da Classe Textura indicando a quantidade de texturas
+        // Cria uma instancia da Classe Textura indicando a quantidade de texturas
         textura = new Textura(totalTextura);
 
         // Estabelece o renderizador de textos
@@ -66,7 +67,7 @@ public class Cena implements GLEventListener{
     public void reset(){
         ang = 0;
 
-        //preenchimento
+        // Preenchimento
         mode = GL2.GL_FILL;
     }
 
@@ -80,8 +81,10 @@ public class Cena implements GLEventListener{
     }
 
     public void ambientLights(GL2 gl) {
-        float luzAmbiente[] = {0, 0, 0, 0.5f}; // Cor
-        float posicaoLuz[] = {-50.0f, 50.0f, 100.0f, 1.0f}; // Pontual
+        float luzAmbiente[] = {0.5f, 0.5f, 0.5f, 0.5f}; // Cor 1
+        float posicaoLuz[] = {100.0f, 100.0f, 50.0f, 0.5f}; // Posicao 1
+//        float luzAmbiente[] = {0, 0, 0, 0.5f}; // Cor 2
+//        float posicaoLuz[] = {-50.0f, 50.0f, 100.0f, 1.0f}; // Posicao 2
 
         // Define parametros de luz de numero 0
         gl.glLightfv(GL2.GL_LIGHT0, GL2.GL_AMBIENT, luzAmbiente, 0);
@@ -109,32 +112,33 @@ public class Cena implements GLEventListener{
         // Define a cor da janela (R, G, G, alpha)
         gl.glClearColor(1, 1, 1, 1);
         // Limpa a janela com a cor especificada
-        //limpa o buffer de profundidade
+        // Limpa o buffer de profundidade
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);       
         gl.glLoadIdentity(); // Le a matriz identidade
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL); //modo dos objetos 3d
         
         // DESENHO DA CENA
 
+        // Menu
         if (menuon) {
             gl.glMatrixMode(GL2.GL_TEXTURE);
             gl.glLoadIdentity();
             gl.glRotatef(180, 1, 0, 0);
             gl.glMatrixMode(GL2.GL_MODELVIEW);
 
-            //não é geração de textura automática
+            // Nao gera textura automatica
             textura.setAutomatica(false);
 
-            //configura os filtros
+            // Configura os filtros
             textura.setFiltro(filtro);
             textura.setModo(GL2.GL_DECAL);
             textura.setWrap(wrap);
 
-            //cria a textura indicando o local da imagem e o índice
+            // Cria a textura indicando o local da imagem e o índice
             textura.gerarTextura(gl, FACE1, 0);
 
             gl.glBegin (GL2.GL_QUADS );
-            //coordenadas da Textura            //coordenadas do quads
+            // Coordenadas da Textura            // Coordenadas do quads
             gl.glTexCoord2f(0.0f, limite);     gl.glVertex3f(-100.0f, -100.0f,  100.0f);
             gl.glTexCoord2f(limite, limite);     gl.glVertex3f( 100.0f, -100.0f,  100.0f);
             gl.glTexCoord2f(limite, 0.0f);     gl.glVertex3f( 100.0f,  100.0f,  100.0f);
@@ -154,7 +158,7 @@ public class Cena implements GLEventListener{
         } else {
             menuoff = true;
             // Escreve os textos
-            writeText(gl, 0, 570, Color.BLUE, "Score: " + score);
+            writeText(gl, 0, 570, Color.BLACK, "Score: " + score);
             writeText(gl, 250, 570, Color.GREEN, "HP: " + hp);
         }
 
@@ -163,12 +167,39 @@ public class Cena implements GLEventListener{
             lightsOn(gl);
         }
 
-        // Texto de Derrota
-        if(loss){
-            writeText(gl, 220, 570/2, Color.RED, "You lose!");
-            writeText(gl, 170, (570/2)-40, Color.RED, "Press ESC to exit.");
-            writeText(gl, 170, (570/2)-80, Color.RED, "Press R to restart.");
-        }
+        // Desenho do background
+        // PREDIO 1
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg1Factor,-30,-100);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(0.3, 1.5, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 2
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg2Factor,-40,-100);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(0.3, 1.2, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 3
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg3Factor,-50,-100);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(0.3, 1.0, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 4
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg4Factor,-40,-100);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(0.3, 1.2, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
 
         // Desenha a bola
         gl.glColor3f(1,0,0); // Vermelho
@@ -179,13 +210,21 @@ public class Cena implements GLEventListener{
         gl.glPopMatrix();
 
         // Desenha a barra
-        gl.glColor3f(1,0,1); // Roxo
+        gl.glColor3f(0,0,1); // Roxo
         gl.glPushMatrix();
         gl.glTranslated(xFactor,-90,0);
         gl.glRotated(30, 1, 0, 0);
         gl.glScaled(4, 1, 1);
         glut.glutSolidCube(10);
         gl.glPopMatrix();
+
+        // Texto de Derrota
+        if(loss){
+            writeText(gl, 220, 570/2, Color.RED, "You lose!");
+            writeText(gl, 170, (570/2)-40, Color.RED, "Press ESC to exit.");
+            writeText(gl, 170, (570/2)-80, Color.RED, "Press R to restart.");
+        }
+
 
 
         gl.glFlush();
@@ -203,6 +242,11 @@ public class Cena implements GLEventListener{
             xSpeed = -xSpeed;
         }
         if(bY+5>100 || bY-5<=-85 && bX>xFactor-20 && bX<xFactor+20){
+//            if(bY-5==-85 && bX>xFactor-20 && bX<xFactor && xSpeed>0){
+//                xSpeed = -xSpeed;
+//            } else if(bY-5==-85 && bX>xFactor && bX<xFactor+20 && xSpeed<0){
+//                xSpeed = -xSpeed;
+//            }
             ySpeed = -ySpeed;
         } else if (bY-5<-100){
             if(hp > 1){
@@ -223,8 +267,28 @@ public class Cena implements GLEventListener{
             score+=10;
         }
 
-        //desabilita a textura indicando o índice
+        // Desabilita a textura indicando o indice
         textura.desabilitarTextura(gl, 0);
+
+        // BACKGROUND
+
+        // Animacao dos predios
+        bg1Factor-=bgSpeed;
+        if(bg1Factor+30<xMin){
+            bg1Factor=-bg1Factor;
+        }
+        bg2Factor-=bgSpeed;
+        if(bg2Factor+30<xMin){
+            bg2Factor=-bg2Factor;
+        }
+        bg3Factor-=bgSpeed;
+        if(bg3Factor+30<xMin){
+            bg3Factor=-bg3Factor;
+        }
+        bg4Factor-=bgSpeed;
+        if(bg4Factor+30<xMin){
+            bg4Factor=-bg4Factor;
+        }
     }
 
     @Override
