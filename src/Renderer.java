@@ -13,7 +13,7 @@ public class Renderer {
     public static int screenWidth = 600;
     public static int screenHeight = 600;
 
-    // Cria a janela de rendeziracao do JOGL
+    // Cria a janela de renderizacao do JOGL
     public static void init(){        
         GLProfile.initSingleton();
         GLProfile profile = GLProfile.get(GLProfile.GL2);
@@ -40,7 +40,7 @@ public class Renderer {
             }
         });       
         
-        //window.setFullscreen(true);        
+        //window.setFullscreen(true);
         window.setVisible(true);
     }
 

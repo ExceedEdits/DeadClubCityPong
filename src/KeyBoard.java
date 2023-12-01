@@ -1,5 +1,7 @@
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
+import com.jogamp.opengl.GL2;
+
 /**
  *
  * @author ExceedEdits
@@ -16,6 +18,10 @@ public class KeyBoard implements KeyListener{
     public void keyPressed(KeyEvent e) {
         System.out.println("Key pressed: " + e.getKeyCode()+" "+e.getKeyChar());
         switch (e.getKeyCode()){
+            case KeyEvent.VK_C:
+                cena.menuon = false;
+            case KeyEvent.VK_S:
+                cena.reset();
             case KeyEvent.VK_LEFT: // Move a barra para a esquerda
                 if(cena.xFactor-20 > -100){
                     cena.xFactor -= 10;
