@@ -4,11 +4,13 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.util.awt.TextRenderer;
 import com.jogamp.opengl.util.gl2.GLUT;
+import textura.Textura;
+
 import java.awt.*;
 
 /**
  *
- * @author ExceedEdits
+ * @author ExceedEdits & Izabelle
  */
 public class Cena implements GLEventListener{    
     GLU glu;
@@ -18,6 +20,23 @@ public class Cena implements GLEventListener{
     int score = 0, hp = 3;
     float xFactor = 0, bY = 0, bX = 0, xSpeed = 2, ySpeed = 1;
     public boolean turn = true, loss = false;
+    public boolean menuon = true, menuoff = false;
+    public int mode;
+    public float ang;
+    // Atributos
+    public float limite;
+
+    //Referencia para classe Textura
+    Textura textura = null;
+    //Quantidade de Texturas a ser carregada
+    private int totalTextura = 1;
+
+    //Constantes para identificar as imagens
+
+    public static final String FACE1 = "assets/Menu.jpg";
+
+    public int filtro = GL2.GL_LINEAR;
+    public int wrap = GL2.GL_REPEAT;
     
     @Override
     public void init(GLAutoDrawable drawable) {
@@ -28,12 +47,27 @@ public class Cena implements GLEventListener{
         xMin = yMin = zMin = -100;
         xMax = yMax = zMax = 100;
 
+        ang = 0;
+        limite = 1;
+
+        //Cria uma instancia da Classe Textura indicando a quantidade de texturas
+        textura = new Textura(totalTextura);
+
         // Estabelece o renderizador de textos
         textRenderer = new TextRenderer(new Font("Comic Sans MS Negrito",
                 Font.PLAIN, 30));
         
         // Habilita o zbuffer
         gl.glEnable(GL2.GL_DEPTH_TEST);
+
+        reset();
+    }
+
+    public void reset(){
+        ang = 0;
+
+        //preenchimento
+        mode = GL2.GL_FILL;
     }
 
     public void writeText(GL2 gl, int xPosicao, int yPosicao, Color cor, String frase){
@@ -57,7 +91,6 @@ public class Cena implements GLEventListener{
     public void lightsOn(GL2 gl) {
         // Habilita a definicao da cor do material a partir da cor corrente
         gl.glEnable(GL2.GL_COLOR_MATERIAL);
-
         // Habilita o uso da iluminacao na cena
         gl.glEnable(GL2.GL_LIGHTING);
         // Habilita a luz de numero 0
@@ -74,22 +107,62 @@ public class Cena implements GLEventListener{
         GLUT glut = new GLUT();
         
         // Define a cor da janela (R, G, G, alpha)
-        gl.glClearColor(0, 0, 0, 1);        
+        gl.glClearColor(1, 1, 1, 1);
         // Limpa a janela com a cor especificada
+        //limpa o buffer de profundidade
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);       
         gl.glLoadIdentity(); // Le a matriz identidade
         gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_FILL); //modo dos objetos 3d
         
         // DESENHO DA CENA
 
+        if (menuon) {
+            gl.glMatrixMode(GL2.GL_TEXTURE);
+            gl.glLoadIdentity();
+            gl.glRotatef(180, 1, 0, 0);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
+
+            //não é geração de textura automática
+            textura.setAutomatica(false);
+
+            //configura os filtros
+            textura.setFiltro(filtro);
+            textura.setModo(GL2.GL_DECAL);
+            textura.setWrap(wrap);
+
+            //cria a textura indicando o local da imagem e o índice
+            textura.gerarTextura(gl, FACE1, 0);
+
+            gl.glBegin (GL2.GL_QUADS );
+            //coordenadas da Textura            //coordenadas do quads
+            gl.glTexCoord2f(0.0f, limite);     gl.glVertex3f(-100.0f, -100.0f,  100.0f);
+            gl.glTexCoord2f(limite, limite);     gl.glVertex3f( 100.0f, -100.0f,  100.0f);
+            gl.glTexCoord2f(limite, 0.0f);     gl.glVertex3f( 100.0f,  100.0f,  100.0f);
+            gl.glTexCoord2f(0.0f, 0.0f);     gl.glVertex3f(-100.0f,  100.0f,  100.0f);
+            gl.glEnd();
+
+            writeText(gl, 100, 450, Color.RED, "DEAD CLUB CITY PONG");
+            writeText(gl, 50, 350, Color.white, "- Controles: para controlar a barra");
+            writeText(gl, 50, 320, Color.white, "  (carrinho) utilize as setas da");
+            writeText(gl, 50, 290, Color.white, "  direita e esquerda do teclado");
+            writeText(gl, 50, 260, Color.white, "- Para sair do jogo pressione a");
+            writeText(gl, 50, 230, Color.white, "  tecla ESC");
+            //writeText(gl, 50, 400, Color.BLACK ,"Para pausar o jogo pressione a tecla backspace, ou a barra de espaço \n");
+            writeText(gl, 50, 200, Color.white, "- Para começar o jogo pressione a");
+            writeText(gl, 50, 170, Color.white, "  tecla C");
+            writeText(gl, 50, 100, Color.white, "Bom jogo!");
+        } else {
+            menuoff = true;
+            // Escreve os textos
+            writeText(gl, 0, 570, Color.BLUE, "Score: " + score);
+            writeText(gl, 250, 570, Color.GREEN, "HP: " + hp);
+        }
+
         if (turn) {
             ambientLights(gl);
             lightsOn(gl);
         }
 
-        // Escreve os textos
-        writeText(gl, 0, 570, Color.BLUE, "Score: " + score);
-        writeText(gl, 250, 570, Color.GREEN, "HP: " + hp);
         // Texto de Derrota
         if(loss){
             writeText(gl, 220, 570/2, Color.RED, "You lose!");
@@ -149,6 +222,9 @@ public class Cena implements GLEventListener{
         if(bY-5==-85 && bX >xFactor-20 && bX<xFactor+20){
             score+=10;
         }
+
+        //desabilita a textura indicando o índice
+        textura.desabilitarTextura(gl, 0);
     }
 
     @Override
