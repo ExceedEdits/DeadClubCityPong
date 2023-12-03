@@ -19,7 +19,7 @@ public class Cena implements GLEventListener{
 
     // Declaracao de constantes
     double angle = 0;
-    int score = 190, hp = 3, level = 1;
+    int score = 0, hp = 5, level = 1;
     float bX = 0, bY = 0, xFactor = 0, xSpeed = 10, ySpeed = 10, eXFactor = 0, eYFactor = 700, eYSpeed = 10,
             eXSpeed = 20, eRadius = 150;
     double eArea = Math.PI*eRadius*eRadius;

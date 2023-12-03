@@ -37,7 +37,7 @@ public class KeyBoard implements KeyListener{
                 }
                 break;
             case KeyEvent.VK_R: // Reinicia o jogo
-                cena.hp=3;
+                cena.hp=5;
                 cena.score=0;
                 if(cena.level==1){
                     cena.bX=0;
@@ -75,10 +75,8 @@ public class KeyBoard implements KeyListener{
                     cena.menuPause=!cena.menuPause;
                     cena.boss = false;
                     cena.finalLevel = false;
-                    break;
-                } else {
-                    break;
                 }
+                break;
             case KeyEvent.VK_ESCAPE: // Fecha o jogo
                 System.exit(0);
                 break;
