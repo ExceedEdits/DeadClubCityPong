@@ -20,7 +20,7 @@ public class KeyBoard implements KeyListener{
     public void keyPressed(KeyEvent e) {
         System.out.println("Key pressed: " + e.getKeyCode()+" "+e.getKeyChar());
         switch (e.getKeyCode()){
-            case KeyEvent.VK_C:
+            case KeyEvent.VK_C: // Comeca o jogo
                 cena.menuOn = false;
                 break;
             case KeyEvent.VK_S:
@@ -39,7 +39,11 @@ public class KeyBoard implements KeyListener{
             case KeyEvent.VK_R: // Reinicia o jogo
                 cena.hp=3;
                 cena.score=0;
-                cena.bX=0;
+                if(cena.level==1){
+                    cena.bX=0;
+                }else{
+                    cena.bX=350;
+                }
                 cena.bY=0;
                 cena.bgSpeed=10;
                 if(cena.xSpeed>0){
@@ -52,7 +56,7 @@ public class KeyBoard implements KeyListener{
                 cena.boss = false;
                 cena.finalLevel = false;
                 break;
-            case KeyEvent.VK_BACK_SPACE:
+            case KeyEvent.VK_BACK_SPACE: // Pausa o jogo
                 if(!cena.menuOn){
                     if(cena.xSpeed!=0 && cena.ySpeed!=0){
                         cena.xSpeed=0;

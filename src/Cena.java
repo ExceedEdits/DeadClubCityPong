@@ -234,6 +234,21 @@ public class Cena implements GLEventListener{
         glut.glutSolidCube(100);
         gl.glPopMatrix();
 
+        if(boss){
+            // Desenho do inimigo
+            gl.glPushMatrix();
+            gl.glTranslated(eXFactor,eYFactor,100);
+            //gl.glRotated(30, 0, 0, 1);
+            gl.glColor4f(0,1, 0, 0.5f);
+            glut.glutSolidSphere(eRadius, 50, 50);
+            gl.glPopMatrix();
+            // Entrada do inimigo
+            eYFactor-=eYSpeed;
+            if(eYFactor<=yMax-200-eRadius){
+                eYSpeed = 0;
+            }
+        }
+
         // Texto de GUI
         if(menuOff){
             writeText(gl, 100, 1030, Color.BLACK, "Score: " + score);
@@ -286,7 +301,11 @@ public class Cena implements GLEventListener{
         }else if (bY-20<yMin+10){
             if(hp > 1){
                 hp--;
-                bX=0;
+                if(level == 1){
+                    bX=0;
+                }else{
+                    bX=350;
+                }
                 bY=0;
                 ySpeed = -ySpeed;
                 xSpeed = -xSpeed;
@@ -304,11 +323,7 @@ public class Cena implements GLEventListener{
         }
         // Controle de Level
         if(score>=200){
-            if(score==200){
-                finalLevel=true;
-            } else {
-                finalLevel=false;
-            }
+            finalLevel = score == 200;
             level = 2;
         }
         if(level == 1){
@@ -320,26 +335,15 @@ public class Cena implements GLEventListener{
         // Inimigo
         if(level == 2){
             boss = true;
-            if(boss){
-                // Desenho do inimigo
-                gl.glPushMatrix();
-                gl.glTranslated(eXFactor,eYFactor,100);
-                //gl.glRotated(30, 0, 0, 1);
-                gl.glColor4f(0,1, 0, 0.5f);
-                glut.glutSolidSphere(eRadius, 50, 50);
-                gl.glPopMatrix();
-                // Entrada do inimigo
-                eYFactor-=eYSpeed;
-                if(eYFactor<=yMax-200-eRadius){
-                    eYSpeed = 0;
-                }
+            // Fisica do Inimigo
+            float distance = (float) Math.sqrt(Math.pow(bX - eXFactor, 2) + Math.pow(bY - eYFactor, 2));
+            if(distance<20+eRadius){
+                xSpeed=-xSpeed;
+                ySpeed=-ySpeed;
             }
 
-            // Fisica do Inimigo
-            // A fazer
-
             // Saida do inimigo
-            if(score>=210){
+            if(score>=400){
                 eXFactor-=eXSpeed;
                 if(eXFactor+eRadius+100<=xMin){
                     eXSpeed = 0;
