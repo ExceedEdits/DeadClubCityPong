@@ -39,8 +39,8 @@ public class Renderer {
                 System.exit(0);
             }
         });
-        
-        //window.setFullscreen(true);
+
+        window.setFullscreen(true);
         window.setVisible(true);
     }
 

@@ -20,12 +20,16 @@ public class Cena implements GLEventListener{
     // Declaracao de constantes
     double angle = 0;
     int score = 190, hp = 3, level = 1;
-    float bX = 0, bY = 0, xFactor = 0, xSpeed = 10, ySpeed = 10;
-    public boolean turn = true, loss = false, menuOn = true, menuOff = false;
-    public int mode;
-    public float ang;
+    float bX = 0, bY = 0, xFactor = 0, xSpeed = 10, ySpeed = 10, eXFactor = 0, eYFactor = 700, eYSpeed = 10,
+            eXSpeed = 20, eRadius = 150;
+    double eArea = Math.PI*eRadius*eRadius;
+    float bgSpeed = 10, bg1Factor = 700, bg2Factor = 350, bg3Factor = 0, bg4Factor = -350, bg5Factor = -700;
+    boolean turn = true, loss = false, menuOn = true, menuOff = false, menuPause = false, boss = false,
+            finalLevel = false;
+    int mode;
+    float ang;
     // Atributos
-    public float limite;
+    float limite;
 
     // Referencia para classe Textura
     Textura textura = null;
@@ -48,12 +52,10 @@ public class Cena implements GLEventListener{
         glu = new GLU();
         GL2 gl = drawable.getGL().getGL2();
         // Estabelece as coordenadas do SRU
-        xMin = -800;
-        xMax = 800;
+        zMin = xMin = -800;
+        zMax = xMax = 800;
         yMin = -450;
         yMax = 450;
-        zMin = -100;
-        zMax = 100;
         ang = 0;
         limite = 1;
 
@@ -125,7 +127,7 @@ public class Cena implements GLEventListener{
         // DESENHO DA CENA
 
         // Menu
-        if (menuOn) {
+        if (menuOn || menuPause) {
             gl.glMatrixMode(GL2.GL_TEXTURE);
             gl.glLoadIdentity();
             gl.glRotatef(180, 1, 0, 0);
@@ -141,7 +143,7 @@ public class Cena implements GLEventListener{
 
             // Cria a textura indicando o local da imagem e o índice
             textura.gerarTextura(gl, FACE1, 0);
-            if(menuOff == false){
+            if(!menuOff){
                 gl.glBegin (GL2.GL_QUADS );
                 // Coordenadas da Textura            // Coordenadas do quads
                 gl.glTexCoord2f(0.0f, limite);     gl.glVertex3f(xMin, yMin,  zMax);
@@ -150,16 +152,20 @@ public class Cena implements GLEventListener{
                 gl.glTexCoord2f(0.0f, 0.0f);     gl.glVertex3f(xMin,  yMax,  zMax);
                 gl.glEnd();
             }
-            writeText(gl, 480, 1000, Color.RED, "DEAD CLUB CITY PONG");
-            writeText(gl, 240, 920, Color.white, "- Controles: para controlar a barra");
-            writeText(gl, 240, 840, Color.white, "  (carrinho) utilize as setas da");
-            writeText(gl, 240, 760, Color.white, "  direita e esquerda do teclado");
-            writeText(gl, 240, 680, Color.white, "- Para sair do jogo pressione a");
-            writeText(gl, 240, 600, Color.white, "  tecla ESC");
-            //writeText(gl, 50, 400, Color.BLACK ,"Para pausar o jogo pressione a tecla backspace, ou a barra de espaço");
-            writeText(gl, 240, 520, Color.white, "- Para começar o jogo pressione a");
-            writeText(gl, 240, 440, Color.white, "  tecla C");
-            writeText(gl, 240, 360, Color.white, "Bom jogo!");
+            if(menuOn){
+                writeText(gl, 720, 1000, Color.RED, "DEAD CLUB CITY PONG");
+                writeText(gl, 800, 900, Color.white, "COMO JOGAR:");
+                writeText(gl, 200, 800, Color.white, "Para controlar sua nave utilize as setas para esquerda e direita.");
+                writeText(gl, 200, 700, Color.white, "Para pausar o jogo pressione a tecla BACKSPACE.");
+                writeText(gl, 200, 600, Color.white, "Para sair do jogo pressione a tecla ESC.");
+                writeText(gl, 200, 500, Color.white, "Para iniciar o jogo pressione a tecla C.");
+                writeText(gl, 200, 400, Color.white, "Para reiniciar o jogo pressione a tecla R.");
+                writeText(gl, 200, 300, Color.white, "Bom jogo!");
+            }
+            if(menuPause){
+                writeText(gl, 720, 1000, Color.RED, "DEAD CLUB CITY PONG");
+                writeText(gl, 900, 1080/2, Color.WHITE, "PAUSE");
+            }
         } else {
             menuOff = true;
         }
@@ -171,70 +177,81 @@ public class Cena implements GLEventListener{
 
         // Desenho do background
         // PREDIO 1
-//        gl.glColor4f(0, 1, 1, 0.5f);
-//        gl.glPushMatrix();
-//        gl.glTranslated(bg1Factor,-30,-100);
-//        gl.glRotated(25, 0, 1, 0);
-//        gl.glScaled(0.3, 1.5, 0.5);
-//        glut.glutSolidCube(100);
-//        gl.glPopMatrix();
-//        // PREDIO 2
-//        gl.glColor4f(0, 1, 1, 0.5f);
-//        gl.glPushMatrix();
-//        gl.glTranslated(bg2Factor,-40,-100);
-//        gl.glRotated(25, 0, 1, 0);
-//        gl.glScaled(0.3, 1.2, 0.5);
-//        glut.glutSolidCube(100);
-//        gl.glPopMatrix();
-//        // PREDIO 3
-//        gl.glColor4f(0, 1, 1, 0.5f);
-//        gl.glPushMatrix();
-//        gl.glTranslated(bg3Factor,-50,-100);
-//        gl.glRotated(25, 0, 1, 0);
-//        gl.glScaled(0.3, 1.0, 0.5);
-//        glut.glutSolidCube(100);
-//        gl.glPopMatrix();
-//        // PREDIO 4
-//        gl.glColor4f(0, 1, 1, 0.5f);
-//        gl.glPushMatrix();
-//        gl.glTranslated(bg4Factor,-40,-100);
-//        gl.glRotated(25, 0, 1, 0);
-//        gl.glScaled(0.3, 1.2, 0.5);
-//        glut.glutSolidCube(100);
-//        gl.glPopMatrix();
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg1Factor,-50,-700);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(3, 8, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 2
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg2Factor,-300,-600);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(3, 8, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 3
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg3Factor,-150,-500);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(3, 8, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 4
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg4Factor,-200,-400);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(3, 8, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
+        // PREDIO 5
+        gl.glColor4f(0, 1, 1, 0.5f);
+        gl.glPushMatrix();
+        gl.glTranslated(bg5Factor,-100,-300);
+        gl.glRotated(25, 0, 1, 0);
+        gl.glScaled(3, 8, 0.5);
+        glut.glutSolidCube(100);
+        gl.glPopMatrix();
 
         // Desenha a bola
-        gl.glColor3f(1,0,0); // Vermelho
+        gl.glColor3f(1,0,0);
         gl.glPushMatrix();
         gl.glTranslated(bX, bY, 0);
-        gl.glRotated(angle, 0, 0, 1);
+        gl.glRotated(angle, 0, 0, 100);
         glut.glutSolidSphere(20, 20, 20);
         gl.glPopMatrix();
 
         // Desenha a barra
-        gl.glColor3f(0,0,1); // Roxo
+        gl.glColor3f(0,0,1);
         gl.glPushMatrix();
-        gl.glTranslated(xFactor,-430,0);
+        gl.glTranslated(xFactor,-425,100);
         gl.glRotated(30, 1, 0, 0);
-        gl.glScaled(3, 0.4, 1);
+        gl.glScaled(3, 0.4, 0.5);
         glut.glutSolidCube(100);
         gl.glPopMatrix();
 
+        // Texto de GUI
         if(menuOff){
-            // Escreve os textos
             writeText(gl, 100, 1030, Color.BLACK, "Score: " + score);
             writeText(gl, 600, 1030, Color.BLACK, "HP: " + hp);
-            writeText(gl, 1000, 1030, Color.BLACK, "Level: " + level);
+            writeText(gl, 1000, 1030, Color.BLACK, "Fase: " + level);
         }
 
         // Texto de Derrota
         if(loss){
-            writeText(gl, 800, (1000/2)+80, Color.RED, "You lose!");
-            writeText(gl, 720, 1000/2, Color.RED, "Press ESC to exit.");
-            writeText(gl, 720, (1000/2)-80, Color.RED, "Press R to restart.");
+            writeText(gl, 800, (1000/2)+100, Color.RED, "Você perdeu!");
+            writeText(gl, 700, 1000/2, Color.RED, "Pressione ESC para sair.");
+            writeText(gl, 650, (1000/2)-100, Color.RED, "Pressione R para recomeçar.");
         }
 
-
+        // Texto de Fase final
+        if(finalLevel){
+            writeText(gl, 800, (1000/2)+200, Color.RED, "Fase Final!");
+        }
 
         gl.glFlush();
 
@@ -266,7 +283,7 @@ public class Cena implements GLEventListener{
                 xSpeed = 20;
             }
             ySpeed = random.nextFloat(15)+1;
-        }else if (bY-20<yMin){
+        }else if (bY-20<yMin+10){
             if(hp > 1){
                 hp--;
                 bX=0;
@@ -282,17 +299,53 @@ public class Cena implements GLEventListener{
         }
 
         // Contagem de pontos
-        if(bY-20==-400 && bX>xFactor-100 && bX<xFactor+100){
+        if(bY>=-400 && bY-20<=-400 && bX>=xFactor-150 && bX<=xFactor+150){
             score+=10;
         }
-
-
         // Controle de Level
         if(score>=200){
             if(score==200){
-                writeText(gl, 800, (1000/2)+160, Color.YELLOW, "Final Level!");
+                finalLevel=true;
+            } else {
+                finalLevel=false;
             }
             level = 2;
+        }
+        if(level == 1){
+            bgSpeed = 10;
+        } else if(level == 2){
+            bgSpeed = 20;
+        }
+
+        // Inimigo
+        if(level == 2){
+            boss = true;
+            if(boss){
+                // Desenho do inimigo
+                gl.glPushMatrix();
+                gl.glTranslated(eXFactor,eYFactor,100);
+                //gl.glRotated(30, 0, 0, 1);
+                gl.glColor4f(0,1, 0, 0.5f);
+                glut.glutSolidSphere(eRadius, 50, 50);
+                gl.glPopMatrix();
+                // Entrada do inimigo
+                eYFactor-=eYSpeed;
+                if(eYFactor<=yMax-200-eRadius){
+                    eYSpeed = 0;
+                }
+            }
+
+            // Fisica do Inimigo
+            // A fazer
+
+            // Saida do inimigo
+            if(score>=210){
+                eXFactor-=eXSpeed;
+                if(eXFactor+eRadius+100<=xMin){
+                    eXSpeed = 0;
+                    boss = false;
+                }
+            }
         }
 
         // Desabilita a textura indicando o indice
@@ -301,22 +354,26 @@ public class Cena implements GLEventListener{
         // BACKGROUND
 
         // Animacao dos predios
-//        bg1Factor-=bgSpeed;
-//        if(bg1Factor+30<xMin){
-//            bg1Factor=-bg1Factor;
-//        }
-//        bg2Factor-=bgSpeed;
-//        if(bg2Factor+30<xMin){
-//            bg2Factor=-bg2Factor;
-//        }
-//        bg3Factor-=bgSpeed;
-//        if(bg3Factor+30<xMin){
-//            bg3Factor=-bg3Factor;
-//        }
-//        bg4Factor-=bgSpeed;
-//        if(bg4Factor+30<xMin){
-//            bg4Factor=-bg4Factor;
-//        }
+        bg1Factor-=bgSpeed;
+        if(bg1Factor+150<xMin){
+            bg1Factor=-bg1Factor;
+        }
+        bg2Factor-=bgSpeed;
+        if(bg2Factor+150<xMin){
+            bg2Factor=-bg2Factor;
+        }
+        bg3Factor-=bgSpeed;
+        if(bg3Factor+150<xMin){
+            bg3Factor=-bg3Factor;
+        }
+        bg4Factor-=bgSpeed;
+        if(bg4Factor+150<xMin){
+            bg4Factor=-bg4Factor;
+        }
+        bg5Factor-=bgSpeed;
+        if(bg5Factor+150<xMin){
+            bg5Factor=-bg5Factor;
+        }
     }
 
     @Override

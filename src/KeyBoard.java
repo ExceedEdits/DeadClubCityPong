@@ -2,6 +2,8 @@ import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.opengl.GL2;
 
+import java.util.Random;
+
 /**
  *
  * @author ExceedEdits & Izabelle
@@ -39,6 +41,7 @@ public class KeyBoard implements KeyListener{
                 cena.score=0;
                 cena.bX=0;
                 cena.bY=0;
+                cena.bgSpeed=10;
                 if(cena.xSpeed>0){
                     cena.xSpeed = -10;
                 } else{
@@ -46,7 +49,32 @@ public class KeyBoard implements KeyListener{
                 }
                 cena.ySpeed = 5;
                 cena.loss = false;
+                cena.boss = false;
+                cena.finalLevel = false;
                 break;
+            case KeyEvent.VK_BACK_SPACE:
+                if(!cena.menuOn){
+                    if(cena.xSpeed!=0 && cena.ySpeed!=0){
+                        cena.xSpeed=0;
+                        cena.ySpeed=0;
+                        cena.bgSpeed=0;
+                    }else{
+                        if(cena.level==1){
+                            cena.xSpeed=10;
+                            cena.ySpeed=10;
+                        }else if(cena.level==2){
+                            cena.xSpeed=15;
+                            cena.ySpeed=10;
+                        }
+                    }
+                    cena.menuOff=!cena.menuOff;
+                    cena.menuPause=!cena.menuPause;
+                    cena.boss = false;
+                    cena.finalLevel = false;
+                    break;
+                } else {
+                    break;
+                }
             case KeyEvent.VK_ESCAPE: // Fecha o jogo
                 System.exit(0);
                 break;
