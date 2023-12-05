@@ -1,7 +1,7 @@
 # Dead Club City Pong
 Projeto A3 de Computação Gráfica de um pequeno Pong de 2 fases, feito através do OpenGL na linguagem Java.
 
-Integrantes do grupo:
+- Integrantes do grupo:
 Matheus Gustavo Lopes de Camargo
 RA125111357395
 
