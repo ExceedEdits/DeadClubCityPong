@@ -26,21 +26,43 @@ public class Textura {
     }
 
     //getters/setters
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
 
     public void setFiltro(int filtro) {
         this.filtro = filtro;
+    }
+
+    public float getFiltro() {
+        return filtro;
     }
 
     public void setModo(int modo) {
         this.modo = modo;
     }
 
+    public float getModo() {
+        return modo;
+    }
+
     public void setWrap(int wrap) {
         this.wrap = wrap;
     }
-    
+
+    public float getWrap() {
+        return wrap;
+    }
+
     public void setAutomatica(boolean automatica){
         this.automatica = automatica;
+    }
+    public boolean getAutomatica(){
+        return automatica;
     }
 
     /**
@@ -146,4 +168,5 @@ public class Textura {
         if(this.automatica)
             desabilitarTexturaAutomatica(gl);
     }
+
 }
