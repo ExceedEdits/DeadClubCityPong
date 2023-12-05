@@ -3,7 +3,17 @@ Projeto A3 de Computação Gráfica de um pequeno Pong de 2 fases, feito atravé
 
 Para rodar o projeto, deve-se adicionar a pasta JOGL nas libraries do programa e rodar atráves do Renderer.
 
-Para jogar, utilize as setas para se mover.
+- Controles:
+
+ESPAÇO: Inicia o jogo;
+
+DIRECIONAIS: Movimenta a barra para esquerda e direita, cada uma em sua respectiva direção;
+
+ENTER: Pausa o jogo;
+
+R: Reinicia o jogo;
+
+ESC: Fecha o jogo;
 
 Aproveite!
 
